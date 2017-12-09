@@ -1,0 +1,2 @@
+# HotSpot
+Templates y Scripts
