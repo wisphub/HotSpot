@@ -1,0 +1,45 @@
+#Wisphub.net  - wisphub@gmail.com
+#Actualizar usuarios a la version 2 de fichas WispHub
+#Ejemplo: pasar comentario R:41#Seg:420 a r=41&Seg=420
+#Ir a System Script, crear nuevo script con el nombre actualizar-usuarios-hp-v2  , copiar todo este codigo y pegarlo en el script
+#Ejecutar Script, abrir terminal y poner: sys script run actualizar-usuarios-hp-v2
+#REQUERIDO: Solicitar activacion de la version 2, crear un user-profile desde wisphub y copiar el script a los user-profile viejos.
+{
+	:foreach i in=[/ip hotspot user find] do={
+	   :local comentario [ /ip hotspot user get $i comment ] 
+	   :local nameUser [ /ip hotspot user get $i name ] 
+	   :local comentarioEncoded
+       
+	   :if ( [:len [:find $comentario "ogueo"]]=0  && $nameUser!="default-trial" && [:len [:find $comentario "#"]]>0 ) do {                    
+	                   
+	      :for i from=0 to=([:len $comentario] - 1) do={ 
+	        :local char [:pick $comentario $i]
+	                    
+	        :if ($char = "#") do={
+	          :set $char "&"     
+	         }
+	         :if ($char = ":") do={
+	                    
+	          :set $char "=" 
+	                    
+	         }
+	         :if ($char = "R") do={
+	                    
+	          :set $char "r" 
+	                    
+	         }
+	         :if ($char = "S") do={
+	              
+	          :set $char "s" 
+	                    
+	         }
+	                    
+	      :set $comentarioEncoded ($comentarioEncoded . $char)          
+	    }
+			:put "comentario: $comentario"         
+			:put "comentarioEncoded: $comentarioEncoded"
+			:put "actualizar comentario"
+			[ /ip hotspot user set $i comment="$comentarioEncoded" ]
+	   } 
+	}
+}
